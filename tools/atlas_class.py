@@ -1,6 +1,4 @@
-import uproot 
 import numpy as np
-from tqdm import tqdm
 import h5py
 import awkward as ak
 import vector
@@ -9,7 +7,6 @@ import sys
 import warnings
 import os
 warnings.filterwarnings("ignore", category=DeprecationWarning)
-
 
 class HyPERParse_ATLAS:
     
@@ -20,7 +17,6 @@ class HyPERParse_ATLAS:
     - Selection should be made before this running (i.e. via FastFrames)
     - Neutrinos computed beforehand (point to that file with matched events)
     """
-    
     pad_to_jet    = 20
     pad_to_lepton = 3
     
@@ -35,7 +31,6 @@ class HyPERParse_ATLAS:
         self.Njets    = ak.count(tree[self.jet_branches["pt"]].array(),axis=1).to_numpy()
         self.Nleptons = None
         
-
     @staticmethod
     def pad_variable(variable, max_len, pad_to = 0):
         padded_variable = ak.pad_none(variable, max_len, axis=1, clip=True)
@@ -55,10 +50,11 @@ class HyPERParse_ATLAS:
     #     pZnu_plus  = (-B + (B**2 - 4*A*C)**(0.5))/(2*A)
     #     pZnu_minus = (-B - (B**2 - 4*A*C)**(0.5))/(2*A)
     
-    
     def read_specific_branches(self):
         
-
+        r"""
+        Loads TTree and builds arrays
+        """
         self.jet_array       = self.tree.arrays(self.jet_branches.keys(),    aliases=self.jet_branches)
         self.electron_array  = self.tree.arrays(self.electron_branches.keys(),aliases=self.electron_branches)
         self.muon_array      = self.tree.arrays(self.muon_branches.keys(),   aliases=self.muon_branches)
@@ -67,12 +63,11 @@ class HyPERParse_ATLAS:
         
         self.Nleptons = ak.count(self.lepton_array["pt"],axis=1).to_numpy()
         
-    
         # self.cfg["Neutrinos"]
     
-        
     def read_generic_branches(self,tree,jet_branches,electron_branches,muon_branches, global_branches):
-        """
+        
+        r"""
         Reads in the TTree produced by TopCPToolkit / FastFrames.
         Builds awkward arrays of jets, leptons and neutrinos
         """
@@ -150,7 +145,6 @@ class HyPERParse_ATLAS:
         self.target_lepton_index_array   = target_lepton_index_array
         self.target_neutrino_index_array = target_neutrino_index_array
                         
-    
     # def prepare_node_data(self):
         
     #     r"""
@@ -236,6 +230,11 @@ class HyPERParse_ATLAS:
     
     def write_h5(self,outfile):
         
+        r"""
+        Write pre-created data to output file
+        Args: outfile = name of output file
+        """
+        
         print('Saving data')
         with h5py.File(outfile, 'w') as h5_file:
             
@@ -254,62 +253,4 @@ class HyPERParse_ATLAS:
 
             # global_group.create_dataset("FullyMatched", data = np.array(IndexSelect, dtype= np.int32)) # To be depreciated
 
-        print('program finished')
-        
-        
-        
-def check_required_keys(config, keys):
-    missing_keys = []
-    for key in keys:
-        if key not in config:
-            missing_keys.append(key)
-    if missing_keys:
-        raise KeyError(f"Missing required config keys: {', '.join(missing_keys)}")
-    
-        
-        
-def main():
-    
-    with open(sys.argv[1]) as stream:
-        try:
-            cfg = yaml.safe_load(stream)
-        except yaml.YAMLError as exc:
-            print(exc)
-              
-    try:
-        check_required_keys(cfg["NodeFeatures"]["Jets"], ["pt","eta","phi","e","btag"])
-    except KeyError as e:
-        print(e)
-        
-    try:
-        check_required_keys(cfg["NodeFeatures"]["Electrons"], ["pt","eta","phi","e","charge"])
-    except KeyError as e:
-        print(e)
-        
-    try:
-        check_required_keys(cfg["NodeFeatures"]["Muons"], ["pt","eta","phi","e","charge"])
-    except KeyError as e:
-        print(e)
-        
-    
-    inputfile = cfg["Files"]["input"]
-    tree      = cfg["Files"]["tree"]
-    input_tree = uproot.open(f"{inputfile}:{tree}")
-    
-    Parser_Object = HyPERParse_ATLAS(tree=input_tree, cfg=cfg)
-    
-    Parser_Object.read_specific_branches()
-    
-    Parser_Object.prepare_node_outputs()
-    
-    Parser_Object.prepare_global_data()
-    
-    Parser_Object.target_indices()
-            
-    Parser_Object.write_h5(cfg["Files"]["output"])
-    
-    
-if __name__ == "__main__":
-    main()
-        
-        
+        print('Programme finished')
