@@ -1,0 +1,3 @@
+[submodule "HyPER"]
+	path = HyPER
+	url = https://github.com/els285/HyPER.git
