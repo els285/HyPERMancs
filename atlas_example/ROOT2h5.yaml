@@ -1,0 +1,54 @@
+Files:
+  input: output.root
+  tree: reco
+  output: output.h5
+
+Prcoess:
+  Topology: TTbar
+  Channel: Single-lepton
+
+NodeFeatures:
+  Jets:
+    pt: jet_pt_NOSYS
+    eta: jet_eta
+    phi: jet_phi
+    e: jet_e_NOSYS
+    btag: jet_GN2v01_FixedCutBEff_77_select
+    # Additional:
+      
+  Electrons:
+    pt: el_pt_NOSYS
+    eta: el_eta
+    phi: el_phi
+    e: el_e_NOSYS
+    charge: el_charge
+    # Additional:
+      
+  Muons:
+    pt: mu_pt_NOSYS
+    eta: mu_eta
+    phi: mu_phi
+    e: mu_e_NOSYS
+    charge: mu_charge
+    # Additional:
+      # Null
+    # Put additional branches here 
+
+GlobalFeatures:
+  - Njets
+  - Nleptons
+  - NBjets  
+
+
+Labels:
+  hadronic_b_index: parton_truth_had_b_index
+  hadronic_up_index: parton_truth_up_index
+  hadronic_down_index: parton_truth_down_index
+  leptonic_b_index: parton_truth_lep_b_index
+
+Neutrino: 
+  include: True # This is intended to turn neutrino capability off or own
+  file: neutrinos.root
+
+
+
