@@ -34,17 +34,23 @@ def main():
         check_required_keys(cfg["NodeFeatures"]["Muons"], ["pt","eta","phi","e","charge"])
     except KeyError as e:
         print(e)
-        
+    
+    print("Loading file")    
     inputfile = cfg["Files"]["input"]
     tree      = cfg["Files"]["tree"]
     input_tree = uproot.open(f"{inputfile}:{tree}")
     
     Parser_Object = HyPERParse_ATLAS(tree=input_tree, cfg=cfg)
+    print("Reading branches")
     Parser_Object.read_specific_branches()
+    print("Preparing kinematic outputs")
     Parser_Object.prepare_node_outputs()
     Parser_Object.prepare_global_data()
+    print("Preparing target labels")
     Parser_Object.target_indices()            
+    print("Writing output")
     Parser_Object.write_h5(cfg["Files"]["output"])
+    print("Finished")
     
 if __name__ == "__main__":
     main()
