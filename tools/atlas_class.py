@@ -204,9 +204,9 @@ class HyPERParse_ATLAS:
         print(self.pad_to_lepton)
 
         lepton_data['pt']     = self.pad_variable(self.lepton_array["pt"]  , self.pad_to_lepton)
-        lepton_data['eta']    = self.pad_variable(self.lepton_array["pt"]  , self.pad_to_lepton)
-        lepton_data['phi']    = self.pad_variable(self.lepton_array["pt"]  , self.pad_to_lepton)
-        lepton_data['e']      = self.pad_variable(self.lepton_array["pt"]  , self.pad_to_lepton)
+        lepton_data['eta']    = self.pad_variable(self.lepton_array["eta"]  , self.pad_to_lepton)
+        lepton_data['phi']    = self.pad_variable(self.lepton_array["phi"]  , self.pad_to_lepton)
+        lepton_data['e']      = self.pad_variable(self.lepton_array["e"]  , self.pad_to_lepton)
         lepton_data['btag']   = np.zeros(len(self.Nleptons)).reshape(-1,1)
         lepton_data['charge'] = self.pad_variable(self.lepton_array["charge"], self.pad_to_lepton)
         mask = np.arange(self.pad_to_lepton) <= self.Nleptons[:, None]
